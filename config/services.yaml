@@ -38,9 +38,11 @@ services:
             $apiHost: '%env(RAPIDAPI_HOST)%'
 
     # Authorization
-    App\EventListener\ApiKeyAuthListener:
-        arguments:
-            $apiKeys: '%env(API_KEYS)%'
+    App\EventListener\BeforeApiEndpointListener:
         tags:
             - { name: kernel.event_listener, event: kernel.request, priority: 10 }
+
+    App\Service\AuthorizationService:
+        arguments:
+            $apiKeys: '%env(API_KEYS)%'
 
