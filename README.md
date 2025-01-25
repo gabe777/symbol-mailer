@@ -99,3 +99,26 @@ API_KEYS=
 
 See at the [API Docs](https://symbol-mailer.ddev.site/api/docs) in details.
 
+#### How does the endpoint work?
+
+The `/history` endpoint does 2 things from a user perspective
+
+1. Retrieves and returns a list of daily **OHLCV** data of a Symbol for a given period in `json` format, based on the request payload.
+2. Sends an email to the user with the same **OHLCV** data attached in *CSV* format.
+
+
+## Considerations
+
+### Database as persistent storage
+
+Due to the fact that any instance of data fetched from the api is historic and not subject to change, it would be beneficial to use a relational or nosql database for permanent storage at least for the Historical Data.
+From a performance perspective it could still be fine with the cache layer in front of it, but the data persistence wouldn't be in the hands of the cache provider. Also refreshing the cache from a relational database where possible as opposed to the YF-API theoretically more efficient looking at the maximum volume of data to be expected.
+
+In my view a table containing the daily OHLCV data (with the fields symbol, day, open, high, low, close, volume) would be sufficient due to the fact that according to my educated guess one row would not be greater than 100 Bytes as an average. This way 100 years of historical data for a given symbol consumes 3,65 MB. At this volume even retrieving the total history for a given symbol wouldn't result in serious traffic and memory load. 
+The max theoretical size of data - without indices - would be slightly less than 11GB which seems manageable, and it would mean 100 years of history for each of the less than 3000 symbols. 
+
+### Rate Limiter
+
+As an extra layer of protection for the API the implementation of a rate limiter mechanism would be beneficial. Actually it has its place to live in `App\Service\RateLimiterService`, but the implementation is not complete due to the lack of time.  
+
+
