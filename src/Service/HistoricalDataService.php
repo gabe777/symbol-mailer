@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\ApiClient\HistoricalDataApiClientInterface;
+use App\Cache\HistoricalDataCache;
 use App\DTO\HistoryItemDTO;
 use App\DTO\StockRequestDTO;
 use App\Transformer\HistoryItemTransformer;
@@ -19,6 +20,7 @@ class HistoricalDataService
     public function __construct(
         private readonly HistoricalDataApiClientInterface $apiClient,
         private readonly HistoryItemTransformer $transformer,
+        private readonly HistoricalDataCache $historicalDataCache
     ) {
     }
 
@@ -35,6 +37,13 @@ class HistoricalDataService
      */
     public function getHistoricalData(StockRequestDTO $stockRequestDTO): array
     {
-        return $this->apiClient->fetchHistoricalData($stockRequestDTO, $this->transformer);
+        $cacheResult = $this->historicalDataCache->getFromRequestCache($stockRequestDTO);
+        if (null !== $cacheResult) {
+            return $cacheResult;
+        }
+        $apiResult = $this->apiClient->fetchHistoricalData($stockRequestDTO, $this->transformer);
+        $this->historicalDataCache->saveToRequestCache($stockRequestDTO, $apiResult);
+
+        return $apiResult;
     }
 }
