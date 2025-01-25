@@ -20,7 +20,6 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 #[Route('/api/v1/stock/')]
 class StockController extends AbstractController
 {
-
     public function __construct(
         private readonly StockRequestDTOFactory $factory,
         private readonly SymbolService $symbolService,
@@ -28,14 +27,6 @@ class StockController extends AbstractController
         private readonly ValidatorInterface $validator,
         private readonly MessageBusInterface $messageBus,
     ) {
-    }
-
-    #[Route('{companySymbol}/history/{startDate}/{endDate}/{email}', name: 'app_api_v1_stock_history_get', methods: [
-        Request::METHOD_GET,
-    ])]
-    public function historyGet(Request $request): Response
-    {
-        return $this->historyLogic($request);
     }
 
     #[Route('{companySymbol}/history', name: 'app_api_v1_stock_history', methods: [
@@ -144,11 +135,6 @@ class StockController extends AbstractController
         ),
     ])]
     public function history(Request $request): Response
-    {
-        return $this->historyLogic($request);
-    }
-
-    protected function historyLogic(Request $request): Response
     {
         try {
             $stockRequestDTO = $this->factory->createFromRequest($request);
