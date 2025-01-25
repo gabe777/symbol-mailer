@@ -22,3 +22,25 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    # StorageAdapter
+    App\Adapter\StorageAdapterInterface:
+        alias: App\Adapter\CacheStorageAdapter
+
+    # HistoricalDataApiClient
+    App\ApiClient\HistoricalDataApiClientInterface:
+        alias: App\ApiClient\HistoricalData\YahooFinanceApiClient
+
+    App\ApiClient\HistoricalData\YahooFinanceApiClient:
+        arguments:
+            $httpClient: '@http_client'
+            $apiKey: '%env(RAPIDAPI_KEY)%'
+            $apiHost: '%env(RAPIDAPI_HOST)%'
+
+    # Authorization
+    App\EventListener\ApiKeyAuthListener:
+        arguments:
+            $apiKeys: '%env(API_KEYS)%'
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, priority: 10 }
+

@@ -1,0 +1,22 @@
+nelmio_api_doc:
+    documentation:
+        info:
+            title: Stock History Data API
+            description: API for retrieving stock history and sending emails with historical data
+            version: 1.0.0
+        components:
+            securitySchemes:
+                api_key_query:
+                    type: apiKey
+                    in: query
+                    name: api_key
+                    description: "API Key via query parameter (?api_key=your_key)"
+                api_key_header:
+                    type: apiKey
+                    in: header
+                    name: Authorization
+                    description: "API Key via Authorization header (Authorization: your_key)"
+
+    areas: # to filter documented areas
+        path_patterns:
+            - ^/api/v1/stock
