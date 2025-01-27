@@ -76,7 +76,7 @@ Needed for running background Jobs, eg. csv generation and email sending:
 7. **Please visit the API Docs**:
    You will be able to try the ```/history``` endpoint after setting up an api key in ```.env``` *API_KEYS* key, and set the same value for Authorize on the swagger ui. 
 
-   > [https://symbol-mailer.ddev.site/api/docs](https://symbol-mailer.ddev.site/api/docs)
+   > [https://symbol-mailer.ddev.site/api/doc](https://symbol-mailer.ddev.site/api/doc)
 
 
 
