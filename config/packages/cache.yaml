@@ -5,4 +5,9 @@ framework:
         # Redis
         app: cache.adapter.redis
         default_redis_provider: '%env(REDIS_URL)%'
+        pools:
+            cache.historical_data:
+                adapter: cache.adapter.redis
+                tags: true
+                default_lifetime: null
 

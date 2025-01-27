@@ -8,6 +8,7 @@ use App\Validator\NotInFuture;
 use App\Validator\ValidSymbol;
 use App\Validator\ValidSymbolValidator;
 use DateTime;
+use DateTimeImmutable;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Constraint;
@@ -95,7 +96,6 @@ class StockRequestDTOTest extends TestCase
         assertInstanceOf(Regex::class, $violations->get(2)->getConstraint());
         assertInstanceOf(Date::class, $violations->get(3)->getConstraint());
         assertInstanceOf(Regex::class, $violations->get(4)->getConstraint());
-
     }
 
     public function testValidation_invalid_endDateOlder()
@@ -124,5 +124,15 @@ class StockRequestDTOTest extends TestCase
         assertEquals('startDate', $violations->get(0)->getPropertyPath());
         assertInstanceOf(NotInFuture::class, $violations->get(1)->getConstraint());
         assertEquals('endDate', $violations->get(1)->getPropertyPath());
+    }
+
+    public function testGetDateImmutable()
+    {
+        $dto = new StockRequestDTO(
+            'symbol', '2025-01-01', '2025-01-02', 'test@test.test'
+        );
+
+        assertEquals(DateTimeImmutable::createFromFormat('YmdHis', '20250101000000'), $dto->getStartDateImmutable());
+        assertEquals(DateTimeImmutable::createFromFormat('YmdHis', '20250102000000'), $dto->getEndDateImmutable());
     }
 }

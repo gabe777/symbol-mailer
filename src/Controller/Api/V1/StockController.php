@@ -7,7 +7,6 @@ namespace App\Controller\Api\V1;
 use App\Factory\StockRequestDTOFactory;
 use App\Message\SendHistoryEmailMessage;
 use App\Service\HistoricalDataService;
-use App\Service\SymbolService;
 use InvalidArgumentException;
 use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,7 +21,6 @@ class StockController extends AbstractController
 {
     public function __construct(
         private readonly StockRequestDTOFactory $factory,
-        private readonly SymbolService $symbolService,
         private readonly HistoricalDataService $historicalDataService,
         private readonly ValidatorInterface $validator,
         private readonly MessageBusInterface $messageBus,
@@ -153,11 +151,7 @@ class StockController extends AbstractController
 
             $this->messageBus->dispatch(
                 new SendHistoryEmailMessage(
-                    $this->symbolService->getSymbolInfo($stockRequestDTO->companySymbol)->companyName,
-                    $stockRequestDTO->startDate,
-                    $stockRequestDTO->endDate,
-                    $stockRequestDTO->email,
-                    $historicalData
+                    $stockRequestDTO
                 )
             );
 
