@@ -2,10 +2,10 @@
 
 namespace App\Tests\Functional\Api\V1;
 
-use App\ApiClient\HistoricalData\YahooFinanceApiClient;
 use App\DTO\HistoryItemDTO;
 use App\DTO\SymbolInfoDTO;
 use App\Message\SendHistoryEmailMessage;
+use App\Service\HistoricalDataService;
 use App\Service\SymbolService;
 use DateTimeImmutable;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -78,10 +78,12 @@ class StockControllerTest extends WebTestCase
             ),
         ];
 
-        $yfApiClient = $this->createMock(YahooFinanceApiClient::class);
-        $yfApiClient->expects($this->once())->method('fetchHistoricalData')->willReturn($transformedYfApiResponse);
+        $historicalDataService = $this->createMock(HistoricalDataService::class);
+        $historicalDataService->expects($this->once())->method('getHistoricalData')->willReturn(
+            $transformedYfApiResponse
+        );
 
-        self::getContainer()->set(YahooFinanceApiClient::class, $yfApiClient);
+        self::getContainer()->set(HistoricalDataService::class, $historicalDataService);
 
         $this->symbolService->method('isValidSymbol')->willReturn(true);
         $this->symbolService->method('getSymbolInfo')->willReturn(new SymbolInfoDTO('AAPL', 'Apple Inc.'));
