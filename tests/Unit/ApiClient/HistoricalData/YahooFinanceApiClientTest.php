@@ -39,8 +39,8 @@ class YahooFinanceApiClientTest extends TestCase
                 'query' => [
                     'symbol' => 'MSTR',
                     'interval' => '1d',
-                    'period1' => 1736031600,
-                    'period2' => 1736204400,
+                    'period1' => strtotime('2025-01-05'),
+                    'period2' => strtotime('2025-01-07'),
                     'events' => 'history',
                 ],
             ]
