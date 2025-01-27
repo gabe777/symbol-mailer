@@ -4,23 +4,15 @@ declare(strict_types=1);
 
 namespace App\Message;
 
-use App\DTO\HistoryItemDTO;
+use App\DTO\StockRequestDTO;
 
 readonly class SendHistoryEmailMessage
 {
     /**
-     * @param string $companyName
-     * @param string $startDate
-     * @param string $endDate
-     * @param string $email
-     * @param HistoryItemDTO[] $historicalData
+     * @param StockRequestDTO $stockRequestDTO
      */
     public function __construct(
-        public string $companyName,
-        public string $startDate,
-        public string $endDate,
-        public string $email,
-        public array $historicalData
+        public StockRequestDTO $stockRequestDTO
     ) {
     }
 }
