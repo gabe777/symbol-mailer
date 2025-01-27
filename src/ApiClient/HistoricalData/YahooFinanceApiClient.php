@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace App\ApiClient\HistoricalData;
 
 use App\ApiClient\HistoricalDataApiClientInterface;
-use App\Constant\DateFormat;
 use App\DTO\HistoryItemDTO;
-use App\DTO\StockRequestDTO;
 use App\Transformer\HistoryItemTransformer;
 use DateTimeImmutable;
 use Exception;
@@ -45,7 +43,9 @@ class YahooFinanceApiClient implements HistoricalDataApiClientInterface
      * @throws ServerExceptionInterface
      */
     public function fetchHistoricalData(
-        StockRequestDTO $stockRequestDTO,
+        string $symbol,
+        DateTimeImmutable $periodStart,
+        DateTimeImmutable $periodEnd,
         HistoryItemTransformer $historyItemTransformer
     ): array {
         $requestHeaders = [
@@ -54,16 +54,10 @@ class YahooFinanceApiClient implements HistoricalDataApiClientInterface
         ];
 
         $query = [
-            'symbol' => $stockRequestDTO->companySymbol,
+            'symbol' => $symbol,
             'interval' => '1d',
-            'period1' => DateTimeImmutable::createFromFormat(
-                DateFormat::ISO_DATE,
-                $stockRequestDTO->startDate
-            )->setTime(0, 0)->getTimestamp(),
-            'period2' => DateTimeImmutable::createFromFormat(
-                DateFormat::ISO_DATE,
-                $stockRequestDTO->endDate
-            )->setTime(0, 0)->getTimestamp(),
+            'period1' => $periodStart->getTimestamp(),
+            'period2' => $periodEnd->getTimestamp(),
             'events' => 'history',
         ];
 

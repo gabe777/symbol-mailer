@@ -111,11 +111,10 @@ class StockControllerTest extends WebTestCase
 
         $message = $messengerTransport->getSent()[0]->getMessage();
         assertInstanceOf(SendHistoryEmailMessage::class, $message);
-        assertEquals('Apple Inc.', $message->companyName);
-        assertEquals('2023-01-01', $message->startDate);
-        assertEquals('2023-01-31', $message->endDate);
-        assertEquals('test@example.com', $message->email);
-        assertEquals($transformedYfApiResponse, $message->historicalData);
+        assertEquals('AAPL', $message->stockRequestDTO->companySymbol);
+        assertEquals('2023-01-01', $message->stockRequestDTO->startDate);
+        assertEquals('2023-01-31', $message->stockRequestDTO->endDate);
+        assertEquals('test@example.com', $message->stockRequestDTO->email);
     }
 
     public function testInvalidCompanySymbol(): void

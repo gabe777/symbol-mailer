@@ -15,7 +15,6 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
 
 use function PHPUnit\Framework\assertContainsOnlyInstancesOf;
 use function PHPUnit\Framework\assertCount;
-use function PHPUnit\Framework\assertIsArray;
 use function PHPUnit\Framework\assertSame;
 
 class YahooFinanceApiClientTest extends TestCase
@@ -63,7 +62,12 @@ class YahooFinanceApiClientTest extends TestCase
         $apiClient = new YahooFinanceApiClient(
             $httpClient, $this->createMock(LoggerInterface::class), 'test_api_key', 'test_api_host'
         );
-        $history = $apiClient->fetchHistoricalData($stockRequestDTO, $transformer);
+        $history = $apiClient->fetchHistoricalData(
+            $stockRequestDTO->companySymbol,
+            $stockRequestDTO->getStartDateImmutable(),
+            $stockRequestDTO->getEndDateImmutable(),
+            $transformer
+        );
 
         assertCount(2, $history);
         assertContainsOnlyInstancesOf(HistoryItemDTO::class, $history);
