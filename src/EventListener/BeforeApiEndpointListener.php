@@ -22,32 +22,35 @@ class BeforeApiEndpointListener
     public function onKernelRequest(RequestEvent $event): void
     {
         $request = $event->getRequest();
-        if (!str_contains($request->getRequestUri(), 'doc') && !$this->authorizationService->authorizeRequest(
+        if (!str_contains($request->getRequestUri(), 'doc')) {
+            if (!$this->authorizationService->authorizeRequest(
                 $request
             )) {
-            $this->logger->warning('Unauthorized access attempt', [
-                'ip' => $request->getClientIp(),
-                'path' => $request->getPathInfo(),
-            ]);
+                $this->logger->warning('Unauthorized access attempt', [
+                    'ip' => $request->getClientIp(),
+                    'path' => $request->getPathInfo(),
+                ]);
 
-            $response = new Response('Unauthorized', Response::HTTP_UNAUTHORIZED);
-            $event->setResponse($response);
+                $response = new Response('Unauthorized', Response::HTTP_UNAUTHORIZED);
+                $event->setResponse($response);
 
-            return;
-        }
+                return;
+            }
 
-        $isRateLimitExceeded = $this->rateLimiterService->setRateLimiterKey(
-            $request->getClientIp().'_'.$this->authorizationService->getApiKey($request)
-        )->isLimitExceeded();
+            $isRateLimitExceeded = $this->rateLimiterService->setRateLimiterKey(
+                $request->getClientIp(),
+                $this->authorizationService->getApiKey($request)
+            )->registerAccess()->isLimitExceeded();
 
-        if ($isRateLimitExceeded) {
-            $this->logger->warning('Rate limit exceeded', [
-                'ip' => $request->getClientIp(),
-                'path' => $request->getPathInfo(),
-                'apiKey' => $this->authorizationService->getApiKey($request),
-            ]);
-            $response = new Response('Rate limit exceeded', Response::HTTP_TOO_MANY_REQUESTS);
-            $event->setResponse($response);
+            if ($isRateLimitExceeded) {
+                $this->logger->warning('Rate limit exceeded', [
+                    'ip' => $request->getClientIp(),
+                    'path' => $request->getPathInfo(),
+                    'apiKey' => $this->authorizationService->getApiKey($request),
+                ]);
+                $response = new Response('Rate limit exceeded', Response::HTTP_TOO_MANY_REQUESTS);
+                $event->setResponse($response);
+            }
         }
     }
 }

@@ -6,7 +6,7 @@
 > Improvements I am working on post-deadline include (but not necessarily limited to):
 >  - Improved long term caching of historical data with monthly segmentation ✔️
 >  - Making external api calls more failsafe with circuit-breaker
->  - Finishing the RateLimiter, that is a placeholder in the deadline state.
+>  - Finishing the RateLimiter, that is a placeholder in the deadline state. ✔️
 >  - Raising test coverage
 > 
 
