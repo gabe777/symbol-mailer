@@ -46,3 +46,10 @@ services:
         arguments:
             $apiKeys: '%env(API_KEYS)%'
 
+
+    App\Service\RateLimiterService:
+        arguments:
+            $ttl: '%env(RATE_LIMITER_TTL)%'
+            $limit: '%env(RATE_LIMITER_LIMIT)%'
+
+
